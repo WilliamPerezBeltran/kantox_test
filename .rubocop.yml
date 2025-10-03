@@ -16,3 +16,9 @@ AllCops:
 
 Lint/EmptyFile:
   Enabled: false
+
+Layout/TrailingWhitespace:
+  Enabled: false
+
+Metrics/BlockLength:
+  Max: 30
