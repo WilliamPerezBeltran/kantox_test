@@ -2,8 +2,18 @@
 
 # pricing policies
 class PricePolicy
-  def initialize(code, calculate_rule)
+  attr_reader :code, :calculate_rule
+
+  def initialize(code, &block)
     @code = code
-    @calculate_rule = calculate_rule
+    @calculate_rule = block
+  end
+
+  def assigned_to?(product_code)
+    product_code.eql?(code)
+  end
+
+  def call(items)
+    calculate_rule.call(items)
   end
 end
