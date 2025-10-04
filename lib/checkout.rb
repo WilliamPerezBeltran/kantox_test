@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# class checkout empty
+# class checkout 
 class Checkout
   attr_reader :rules, :elements
-  
+
   def initialize(rules = [])
-    @rules = rules 
+    @rules = rules
     @elements = []
   end
 
@@ -14,8 +14,15 @@ class Checkout
   end
 
   def total
-    return 0.0 if @elements.empty?
+    @elements
+      .group_by(&:code)
+      .sum { |code, products| apply_to(code)&.call(products) || products.sum(&:price) }
+      .round(2)
+  end
 
-    @elements.reduce(0) { |aco, elem| aco + elem.price }.round(2)
+  private
+
+  def apply_to(code)
+    @rules.detect { |rule| rule.assigned_to?(code) }
   end
 end
