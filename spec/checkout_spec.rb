@@ -1,30 +1,35 @@
 # frozen_string_literal: true
 
-require 'rspec'
 require_relative '../lib/checkout'
-require_relative '../lib/product'
+require_relative '../lib/rules'
 
 RSpec.describe Checkout do
-  let(:checkout) { Checkout.new }
-  let(:product1) { Product.new('PR1', 'product1', 1.24) }
-  let(:product2) { Product.new('PR2', 'product2', 0.62) }
+  let(:gr1) { Product.new('GR1', 'Green tea', 3.11) }
+  let(:sr1) { Product.new('SR1', 'Strawberries', 5.00) }
+  let(:cf1) { Product.new('CF1', 'Coffee', 11.23) }
+  let(:co)  { Checkout.new(PRICING_RULES) }
 
-  describe '#scan' do
-    it 'adds products to elements list' do
-      checkout.scan(product1)
-      expect(checkout.elements).to include(product1)
-    end
+  def scan_products(products)
+    products.each { |product| co.scan(product) }
   end
 
-  describe '#total' do
-    it 'There are no elements as a consecuense return 0.0' do
-      expect(checkout.total).to eq(0.0)
-    end
+  it 'basket: GR1, SR1, GR1, GR1, CF1 = £22.45' do
+    scan_products([gr1, sr1, gr1, gr1, cf1])
+    expect(co.total).to eq(22.45)
+  end
 
-    it 'sums the prices of elements' do
-      checkout.scan(product1)
-      checkout.scan(product2)
-      expect(checkout.total).to eq(1.86)
-    end
+  it 'basket: GR1, GR1 = £3.11' do
+    scan_products([gr1, gr1])
+    expect(co.total).to eq(3.11)
+  end
+
+  it 'basket: SR1, SR1, GR1, SR1 = £16.61' do
+    scan_products([sr1, sr1, gr1, sr1])
+    expect(co.total).to eq(16.61)
+  end
+
+  it 'basket: GR1, CF1, SR1, CF1, CF1 = £30.57' do
+    scan_products([gr1, cf1, sr1, cf1, cf1])
+    expect(co.total).to eq(30.57)
   end
 end
