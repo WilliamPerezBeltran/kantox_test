@@ -101,6 +101,84 @@ This project follows best practices for code quality and maintainability:
 - **Pre-commit hooks** were configured to automatically run **RuboCop**, blocking commits that do not meet style or linting standards.  
 - **GitHub Actions (RuboCop Linter)** was implemented to automate continuous integration (CI), ensuring code quality on every push and pull request.
 
+### Testing Framework Used
+This project uses **RSpec** as the main testing framework to ensure that each class and business rule behaves as expected.  
+RSpec provides a clean and readable syntax for writing unit tests, which improves maintainability and supports the Test-Driven Development (TDD) approach.
+
+### Running Tests
+All application tests are in the `spec/` folder. 
+To execute the entire test suite, run the following command:
+
+```bash
+bundle exec rspec --format documentation
+```
+You can also run them with the default format:
+
+```bash
+bundle exec rspec
+```
+
+Example:
+
+```
+Checkout
+  shopping cart: GR1, SR1, GR1, GR1, CF1 = £22.45
+  shopping cart: GR1, GR1 = £3.11
+  shopping cart: SR1, SR1, GR1, SR1 = £16.61
+  shopping cart: GR1, CF1, SR1, CF1, CF1 = £30.57
+  returns 0.0 for an empty shopping cart
+  returns the price of a single product
+  applies Buy One, Get One rule correctly to Green tea
+  applies rule of Strawberries when 3 or more
+  applies rule of discount for Coffee when 3 or more
+
+PricePolicy
+  #initialize
+    stores the calculation block in calculate_rule
+    allows initialize without a block
+  #assigned_to?
+    returns true if the code matches
+    returns false when codes do not match
+    is case-sensitive
+    returns false when product_code is nil
+  #call
+    raises an error if no block was given at initialization
+    returns 0 if items is empty
+    executes calculate_rule block and returns the outcome
+    edge cases
+      works when items is nil if block handles it
+      raises an exception if a nil is passed
+
+Product
+  type validations
+    raises error if code is not a string
+    raises error if name is not a string
+    raises error if price is not a float
+  attributes
+    has the correct code
+    has the correct name
+    has the correct price
+  #to_s
+    formats the product as a string
+
+Pricing Rules
+  applies tea_rule
+  applies strawberry_rule
+  applies coffee_rule
+
+Finished in 0.0057 seconds (files took 0.09178 seconds to load)
+30 examples, 0 failures
+```
+
+**All tests passed successfully.**
+
+### Running a Specific Test
+If you want to execute only a single test file execute the following command.  
+
+```bash
+bundle exec rspec spec/checkout_spec.rb --format documentation
+```
+
 ## Author
 **William Pérez**  
 - [GitHub profile](https://github.com/WilliamPerezBeltran)
